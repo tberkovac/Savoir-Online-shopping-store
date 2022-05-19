@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Savoir.Models
+namespace SavoirApp.Models
 {
     public class Deliverer
     {

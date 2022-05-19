@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Savoir.Models
+namespace SavoirApp.Models
 {
     public abstract class Person
     {

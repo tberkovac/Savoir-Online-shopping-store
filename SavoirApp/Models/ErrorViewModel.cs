@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Savoir.Models
+namespace SavoirApp.Models
 {
     public class ErrorViewModel
     {
