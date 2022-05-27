@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SavoirApp.Models
 {
     public class Order
     {
-        List<Item> chosenItems;
-        double totalPrice;
-        string idOrder;
-        string idUser;
-        PayingOptions payingOption;
-        Status status;
+        [Key]
+        public string ID { get; set; }
+        public List<Item> ChosenItems { get; set; }
+        public double TotalPrice { get; set; }
+        public string IdUser { get; set; }
+        public PayingOptions PayingOption { get; set; }
+        public Status Status { get; set; }
+
+        public Order()
+        {
+        }
     }
 }

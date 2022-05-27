@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SavoirApp.Models
 {
     public class RegisteredUser
     {
-        string idUser;
-        double moneySpent;
-        List<Order> orders;
+        [Key]
+        public int ID { get; set; }
+        public double MoneySpent { get; set; }
+        public List<Order> Orders { get; set; }
+
+        public RegisteredUser()
+        {
+        }
     }
 }

@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SavoirApp.Models
 {
     public class VIPUser
     {
-        string idUser;
-        double moneySpent;
-        List<Item> wishList;
-        List<Order> orders;
+        [Key]
+        public string ID { get; set; }
+        public double MoneySpent { get; set; }
+        public List<Item> WishList { get; set; }
+        public List<Order> Orders { get; set; }
+
+        public VIPUser()
+        {
+        }
     }
 }
