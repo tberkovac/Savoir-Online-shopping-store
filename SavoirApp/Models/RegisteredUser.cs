@@ -9,7 +9,7 @@ namespace SavoirApp.Models
         [Key]
         public int ID { get; set; }
         public double MoneySpent { get; set; }
-        public List<Order> Orders { get; set; }
+    //    public List<Order> Orders { get; set; } treba obrisati
 
         public RegisteredUser()
         {

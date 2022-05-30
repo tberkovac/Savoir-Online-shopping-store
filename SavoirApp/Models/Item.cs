@@ -10,7 +10,7 @@ namespace SavoirApp.Models
         public int IdItem { get; set; }
         public string Name { get; set; }
         public string Price { get; set; }
-        public List<string> AvailableSizes { get; set; }
+     //   public List<string> AvailableSizes { get; set; } za izbacit
         public string ItemDetails { get; set; }
         public int Quantity { get; set; }
         public Gender Gender { get; set; }

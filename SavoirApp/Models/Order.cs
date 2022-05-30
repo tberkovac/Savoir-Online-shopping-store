@@ -8,7 +8,7 @@ namespace SavoirApp.Models
     {
         [Key]
         public string ID { get; set; }
-        public List<Item> ChosenItems { get; set; }
+    //    public List<Item> ChosenItems { get; set; } treba izbaciti 
         public double TotalPrice { get; set; }
         public string IdUser { get; set; }
         public PayingOptions PayingOption { get; set; }
