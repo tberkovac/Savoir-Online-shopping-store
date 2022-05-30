@@ -9,13 +9,14 @@ namespace SavoirApp.Models
         [Key]
         public int ID { get; set; }
 
-        [ForeignKey("Deliverer")]
+        [ForeignKey("Deliverers")]
         public int IDDeliverer { get; set; }
         public Deliverer Deliverer { get; set; }
 
-        [ForeignKey("Order")]
+        [ForeignKey("Orders")]
         public int IDOrder { get; set; }
         public Order Order { get; set; }
+
         public DelivererOrders()
         {
         }

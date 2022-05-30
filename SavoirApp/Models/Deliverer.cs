@@ -9,9 +9,8 @@ namespace SavoirApp.Models
     {
         [Key]
         public int ID { get; set; }
-    //    public List<Order> Orders { get; set; } obrisat listu
 
-        [ForeignKey("Order")]
+        [ForeignKey("Orders")]
         public int IDCurrentOrder { get; set; }
         public Order CurrentOrder { get; set; }
 

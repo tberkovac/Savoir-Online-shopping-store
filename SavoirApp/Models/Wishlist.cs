@@ -9,11 +9,11 @@ namespace SavoirApp.Models
         [Key]
         public int ID { get; set; }
 
-        [ForeignKey("VIPUser")]
+        [ForeignKey("VIPUsers")]
         public int IDVIPUser { get; set; }
         public VIPUser VIPUser { get; set; }
 
-        [ForeignKey("Item")]
+        [ForeignKey("Items")]
         public int IDItem { get; set; }
         public Item Item { get; set; }
 
