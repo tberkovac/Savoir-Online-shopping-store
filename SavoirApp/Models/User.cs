@@ -21,7 +21,7 @@ namespace SavoirApp.Models
         [ForeignKey("AspNetUsers")]
         public int FKASPUserId { get; set; }
 
-        [ForeignKey("Wishlists")]
+        [ForeignKey("Wishlist")]
         public int FKWishlistId { get; set; }
         public Wishlist Wishlist { get; set; }
 
