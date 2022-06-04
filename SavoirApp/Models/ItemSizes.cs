@@ -11,7 +11,7 @@ namespace SavoirApp.Models
 
         [ForeignKey("Items")]
         public int IDItem { get; set; }
-        public Item item { get; set; }
+        public Item Item { get; set; }
 
         public string Size { get; set; }
         public ItemSizes()

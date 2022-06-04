@@ -7,7 +7,7 @@ namespace SavoirApp.Models
     public class Item
     {
         [Key]
-        public int IdItem { get; set; }
+        public int ID { get; set; }
         public string Name { get; set; }
         public string Price { get; set; }
         public string ItemDetails { get; set; }
