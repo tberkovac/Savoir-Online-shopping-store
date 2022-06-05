@@ -12,8 +12,13 @@ namespace SavoirApp.Models
         public string Price { get; set; }
         public string ItemDetails { get; set; }
         public int Quantity { get; set; }
+
+        [EnumDataType(typeof(Gender))]
         public Gender Gender { get; set; }
+
         public string ImageURL { get ; set ; }
+
+        [EnumDataType(typeof(Brand))]
         public Brand Brand { get; set; }
         public int InStock { get; set; }
 
