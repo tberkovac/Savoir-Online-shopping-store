@@ -46,6 +46,8 @@ namespace SavoirApp.Controllers
         // GET: Items/Create
         public IActionResult Create()
         {
+            ViewData["Brand"] = new SelectList(_context.Items, "ID", "ID");
+
             return View();
         }
 

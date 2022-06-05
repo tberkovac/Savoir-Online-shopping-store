@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,23 +11,26 @@ using SavoirApp.Models;
 
 namespace SavoirApp.Controllers
 {
-    public class WhislistsController : Controller
+    [Authorize]
+    public class WishlistsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public WhislistsController(ApplicationDbContext context)
+        public WishlistsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Whislists
+        // GET: Wishlists
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Wishlists.Include(w => w.Item);
+                //Wishlists.Include(w => w.Item);
+     
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Whislists/Details/5
+        // GET: Wishlists/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,14 +49,15 @@ namespace SavoirApp.Controllers
             return View(wishlist);
         }
 
-        // GET: Whislists/Create
+        // GET: Wishlists/Create
         public IActionResult Create()
         {
             ViewData["IDItem"] = new SelectList(_context.Items, "ID", "ID");
+
             return View();
         }
 
-        // POST: Whislists/Create
+        // POST: Wishlists/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -69,7 +74,7 @@ namespace SavoirApp.Controllers
             return View(wishlist);
         }
 
-        // GET: Whislists/Edit/5
+        // GET: Wishlists/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,7 +91,7 @@ namespace SavoirApp.Controllers
             return View(wishlist);
         }
 
-        // POST: Whislists/Edit/5
+        // POST: Wishlists/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -122,7 +127,7 @@ namespace SavoirApp.Controllers
             return View(wishlist);
         }
 
-        // GET: Whislists/Delete/5
+        // GET: Wishlists/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -141,7 +146,7 @@ namespace SavoirApp.Controllers
             return View(wishlist);
         }
 
-        // POST: Whislists/Delete/5
+        // POST: Wishlists/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
