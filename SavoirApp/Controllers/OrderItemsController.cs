@@ -26,7 +26,9 @@ namespace SavoirApp.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: OrderItems/Details/5
+
+
+// GET: OrderItems/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,6 +60,20 @@ namespace SavoirApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,IDOrder,IDItem")] OrderItems orderItems)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(orderItems);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["IDOrder"] = new SelectList(_context.Orders, "ID", "ID", orderItems.IDOrder);
+            return View(orderItems);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOI([Bind("ID,IDOrder,IDItem")] OrderItems orderItems)
         {
             if (ModelState.IsValid)
             {
@@ -156,5 +172,6 @@ namespace SavoirApp.Controllers
         {
             return _context.OrderItems.Any(e => e.ID == id);
         }
+
     }
 }
