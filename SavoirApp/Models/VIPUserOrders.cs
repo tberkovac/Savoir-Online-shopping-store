@@ -9,8 +9,8 @@ namespace SavoirApp.Models
         [Key]
         public int ID { get; set; }
 
-        [ForeignKey("Users")]
-        public int IDUser { get; set; }
+        [ForeignKey("User")]
+        public string IDUser { get; set; }
         public User User { get; set; }
 
         [ForeignKey("Order")]

@@ -22,31 +22,6 @@ namespace SavoirApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
@@ -99,6 +74,110 @@ namespace SavoirApp.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ItemSizes",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IDItem = table.Column<int>(type: "int", nullable: false),
+                    ItemID = table.Column<int>(type: "int", nullable: true),
+                    Size = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemSizes", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_ItemSizes_Items_ItemID",
+                        column: x => x.ItemID,
+                        principalTable: "Items",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Wishlists",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IDItem = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Wishlists", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Wishlists_Items_IDItem",
+                        column: x => x.IDItem,
+                        principalTable: "Items",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IDOrder = table.Column<int>(type: "int", nullable: false),
+                    IDItem = table.Column<int>(type: "int", nullable: false),
+                    itemID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Items_itemID",
+                        column: x => x.itemID,
+                        principalTable: "Items",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_IDOrder",
+                        column: x => x.IDOrder,
+                        principalTable: "Orders",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MoneySpent = table.Column<double>(type: "float", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FKWishlistId = table.Column<int>(type: "int", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Wishlists_FKWishlistId",
+                        column: x => x.FKWishlistId,
+                        principalTable: "Wishlists",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -188,96 +267,27 @@ namespace SavoirApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItemSizes",
+                name: "DelivererOrders",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IDItem = table.Column<int>(type: "int", nullable: false),
-                    ItemID = table.Column<int>(type: "int", nullable: true),
-                    Size = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    IDUser = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IDOrder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemSizes", x => x.ID);
+                    table.PrimaryKey("PK_DelivererOrders", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_ItemSizes_Items_ItemID",
-                        column: x => x.ItemID,
-                        principalTable: "Items",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Wishlists",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IDItem = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Wishlists", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Wishlists_Items_IDItem",
-                        column: x => x.IDItem,
-                        principalTable: "Items",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderItems",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IDOrder = table.Column<int>(type: "int", nullable: false),
-                    IDItem = table.Column<int>(type: "int", nullable: false),
-                    itemID = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderItems", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Items_itemID",
-                        column: x => x.itemID,
-                        principalTable: "Items",
-                        principalColumn: "ID",
+                        name: "FK_DelivererOrders_AspNetUsers_IDUser",
+                        column: x => x.IDUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_OrderItems_Orders_IDOrder",
+                        name: "FK_DelivererOrders_Orders_IDOrder",
                         column: x => x.IDOrder,
                         principalTable: "Orders",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VIPUsers",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MoneySpent = table.Column<double>(type: "float", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FKASPUserId = table.Column<int>(type: "int", nullable: false),
-                    FKWishlistId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VIPUsers", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_VIPUsers_Wishlists_FKWishlistId",
-                        column: x => x.FKWishlistId,
-                        principalTable: "Wishlists",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -288,25 +298,24 @@ namespace SavoirApp.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IDUser = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: true),
+                    IDUser = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IDOrder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RegisteredUserOrders", x => x.ID);
                     table.ForeignKey(
+                        name: "FK_RegisteredUserOrders_AspNetUsers_IDUser",
+                        column: x => x.IDUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_RegisteredUserOrders_Orders_IDOrder",
                         column: x => x.IDOrder,
                         principalTable: "Orders",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RegisteredUserOrders_VIPUsers_UserID",
-                        column: x => x.UserID,
-                        principalTable: "VIPUsers",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -315,25 +324,24 @@ namespace SavoirApp.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IDUser = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: true),
+                    IDUser = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IDOrder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_VIPUserOrders", x => x.ID);
                     table.ForeignKey(
+                        name: "FK_VIPUserOrders_AspNetUsers_IDUser",
+                        column: x => x.IDUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_VIPUserOrders_Orders_IDOrder",
                         column: x => x.IDOrder,
                         principalTable: "Orders",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VIPUserOrders_VIPUsers_UserID",
-                        column: x => x.UserID,
-                        principalTable: "VIPUsers",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -369,11 +377,26 @@ namespace SavoirApp.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_FKWishlistId",
+                table: "AspNetUsers",
+                column: "FKWishlistId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DelivererOrders_IDOrder",
+                table: "DelivererOrders",
+                column: "IDOrder");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DelivererOrders_IDUser",
+                table: "DelivererOrders",
+                column: "IDUser");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItemSizes_ItemID",
@@ -396,9 +419,9 @@ namespace SavoirApp.Migrations
                 column: "IDOrder");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RegisteredUserOrders_UserID",
+                name: "IX_RegisteredUserOrders_IDUser",
                 table: "RegisteredUserOrders",
-                column: "UserID");
+                column: "IDUser");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VIPUserOrders_IDOrder",
@@ -406,14 +429,9 @@ namespace SavoirApp.Migrations
                 column: "IDOrder");
 
             migrationBuilder.CreateIndex(
-                name: "IX_VIPUserOrders_UserID",
+                name: "IX_VIPUserOrders_IDUser",
                 table: "VIPUserOrders",
-                column: "UserID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VIPUsers_FKWishlistId",
-                table: "VIPUsers",
-                column: "FKWishlistId");
+                column: "IDUser");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Wishlists_IDItem",
@@ -439,6 +457,9 @@ namespace SavoirApp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "DelivererOrders");
+
+            migrationBuilder.DropTable(
                 name: "ItemSizes");
 
             migrationBuilder.DropTable(
@@ -458,9 +479,6 @@ namespace SavoirApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Orders");
-
-            migrationBuilder.DropTable(
-                name: "VIPUsers");
 
             migrationBuilder.DropTable(
                 name: "Wishlists");

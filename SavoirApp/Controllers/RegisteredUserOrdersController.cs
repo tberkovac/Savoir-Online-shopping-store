@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -50,6 +51,14 @@ namespace SavoirApp.Controllers
         {
             ViewData["IDOrder"] = new SelectList(_context.Orders, "ID", "ID");
             return View();
+        }
+
+
+        public async Task<IActionResult> OrderList()
+        {
+            var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var t = _context.RegisteredUserOrders.FromSqlRaw("SELECT * FROM RegisteredUserOrders o WHERE o.IDUser = {0}", UserId).ToList();
+            return View(t);
         }
 
         // POST: RegisteredUserOrders/Create

@@ -1,5 +1,7 @@
 @model IEnumerable<SavoirApp.Models.Item>
 
+
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -67,7 +69,7 @@
                 @Html.DisplayFor(modelItem => item.InStock)
             </td>
             <td>
-                <a asp-action="Create" asp-protocol="HttpPost" asp-controller="OrderItems">Add to cart</a> |
+                <a asp-action="Create" asp-controller="Items" asp-route-id="@item.ID">Add to cart</a> |
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>

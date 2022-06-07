@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,6 +25,11 @@ namespace SavoirApp.Controllers
         {
             return View(await _context.Items.ToListAsync());
         }
+
+        //GET : cart
+ 
+
+        
 
         // GET: Items/Details/5
         public async Task<IActionResult> Details(int? id)
