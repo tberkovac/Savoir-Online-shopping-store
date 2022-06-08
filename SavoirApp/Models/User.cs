@@ -17,6 +17,8 @@ namespace SavoirApp.Models
         public int FKWishlistId { get; set; }
         public Wishlist Wishlist { get; set; }
 
+        public String slika { get; set; }
+
         public User()
         {
         }

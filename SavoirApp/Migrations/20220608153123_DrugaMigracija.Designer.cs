@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SavoirApp.Data;
 
 namespace SavoirApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220608153123_DrugaMigracija")]
+    partial class DrugaMigracija
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -387,6 +389,9 @@ namespace SavoirApp.Migrations
                     b.Property<string>("IDUser")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("slika")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ID");
 
                     b.HasIndex("IDOrder");
@@ -431,9 +436,6 @@ namespace SavoirApp.Migrations
 
                     b.Property<double>("MoneySpent")
                         .HasColumnType("float");
-
-                    b.Property<string>("slika")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasIndex("FKWishlistId");
 
