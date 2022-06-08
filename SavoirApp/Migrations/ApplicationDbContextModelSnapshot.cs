@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SavoirApp.Data;
 
-namespace SavoirApp.Data.Migrations
+namespace SavoirApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -15,9 +15,9 @@ namespace SavoirApp.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.17");
+                .HasAnnotation("ProductVersion", "5.0.17")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -51,7 +51,7 @@ namespace SavoirApp.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -80,6 +80,10 @@ namespace SavoirApp.Data.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -133,6 +137,8 @@ namespace SavoirApp.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -140,7 +146,7 @@ namespace SavoirApp.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -219,32 +225,34 @@ namespace SavoirApp.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("SavoirApp.Models.Deliverer", b =>
+            modelBuilder.Entity("SavoirApp.Models.DelivererOrders", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CurrentOrderID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("IDCurrentOrder")
+                    b.Property<int>("IDOrder")
                         .HasColumnType("int");
+
+                    b.Property<string>("IDUser")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("CurrentOrderID");
+                    b.HasIndex("IDOrder");
 
-                    b.ToTable("Deliverers");
+                    b.HasIndex("IDUser");
+
+                    b.ToTable("DelivererOrders");
                 });
 
             modelBuilder.Entity("SavoirApp.Models.Item", b =>
                 {
-                    b.Property<int>("IdItem")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Brand")
                         .HasColumnType("int");
@@ -270,7 +278,7 @@ namespace SavoirApp.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("IdItem");
+                    b.HasKey("ID");
 
                     b.ToTable("Items");
                 });
@@ -280,31 +288,30 @@ namespace SavoirApp.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("IDItem")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ItemID")
                         .HasColumnType("int");
 
                     b.Property<string>("Size")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("itemIdItem")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
 
-                    b.HasIndex("itemIdItem");
+                    b.HasIndex("ItemID");
 
                     b.ToTable("ItemSizes");
                 });
 
             modelBuilder.Entity("SavoirApp.Models.Order", b =>
                 {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IdUser")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("PayingOption")
                         .HasColumnType("int");
@@ -325,7 +332,7 @@ namespace SavoirApp.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("IDItem")
                         .HasColumnType("int");
@@ -333,34 +340,16 @@ namespace SavoirApp.Data.Migrations
                     b.Property<int>("IDOrder")
                         .HasColumnType("int");
 
-                    b.Property<string>("OrderID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("itemIdItem")
+                    b.Property<int?>("itemID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("OrderID");
+                    b.HasIndex("IDOrder");
 
-                    b.HasIndex("itemIdItem");
+                    b.HasIndex("itemID");
 
                     b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("SavoirApp.Models.RegisteredUser", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<double>("MoneySpent")
-                        .HasColumnType("float");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("RegisteredUsers");
                 });
 
             modelBuilder.Entity("SavoirApp.Models.RegisteredUserOrders", b =>
@@ -368,40 +357,21 @@ namespace SavoirApp.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("IDOrder")
                         .HasColumnType("int");
 
-                    b.Property<int>("IDRegisteredUser")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OrderID")
+                    b.Property<string>("IDUser")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("RegisteredUserID")
-                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("OrderID");
+                    b.HasIndex("IDOrder");
 
-                    b.HasIndex("RegisteredUserID");
+                    b.HasIndex("IDUser");
 
                     b.ToTable("RegisteredUserOrders");
-                });
-
-            modelBuilder.Entity("SavoirApp.Models.VIPUser", b =>
-                {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("MoneySpent")
-                        .HasColumnType("float");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("VIPUsers");
                 });
 
             modelBuilder.Entity("SavoirApp.Models.VIPUserOrders", b =>
@@ -409,25 +379,19 @@ namespace SavoirApp.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("IDOrder")
                         .HasColumnType("int");
 
-                    b.Property<int>("IDVIPUser")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OrderID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("VIPUserID")
+                    b.Property<string>("IDUser")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("OrderID");
+                    b.HasIndex("IDOrder");
 
-                    b.HasIndex("VIPUserID");
+                    b.HasIndex("IDUser");
 
                     b.ToTable("VIPUserOrders");
                 });
@@ -437,27 +401,40 @@ namespace SavoirApp.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("IDItem")
                         .HasColumnType("int");
 
-                    b.Property<int>("IDVIPUser")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ItemIdItem")
-                        .HasColumnType("int");
-
-                    b.Property<string>("VIPUserID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("ID");
 
-                    b.HasIndex("ItemIdItem");
-
-                    b.HasIndex("VIPUserID");
+                    b.HasIndex("IDItem");
 
                     b.ToTable("Wishlists");
+                });
+
+            modelBuilder.Entity("SavoirApp.Models.User", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FKWishlistId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("MoneySpent")
+                        .HasColumnType("float");
+
+                    b.HasIndex("FKWishlistId");
+
+                    b.HasDiscriminator().HasValue("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -511,33 +488,43 @@ namespace SavoirApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SavoirApp.Models.Deliverer", b =>
+            modelBuilder.Entity("SavoirApp.Models.DelivererOrders", b =>
                 {
-                    b.HasOne("SavoirApp.Models.Order", "CurrentOrder")
+                    b.HasOne("SavoirApp.Models.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("CurrentOrderID");
+                        .HasForeignKey("IDOrder")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("CurrentOrder");
+                    b.HasOne("SavoirApp.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("IDUser");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SavoirApp.Models.ItemSizes", b =>
                 {
-                    b.HasOne("SavoirApp.Models.Item", "item")
+                    b.HasOne("SavoirApp.Models.Item", "Item")
                         .WithMany()
-                        .HasForeignKey("itemIdItem");
+                        .HasForeignKey("ItemID");
 
-                    b.Navigation("item");
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("SavoirApp.Models.OrderItems", b =>
                 {
                     b.HasOne("SavoirApp.Models.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("OrderID");
+                        .HasForeignKey("IDOrder")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SavoirApp.Models.Item", "item")
                         .WithMany()
-                        .HasForeignKey("itemIdItem");
+                        .HasForeignKey("itemID");
 
                     b.Navigation("item");
 
@@ -548,45 +535,56 @@ namespace SavoirApp.Data.Migrations
                 {
                     b.HasOne("SavoirApp.Models.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("OrderID");
+                        .HasForeignKey("IDOrder")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("SavoirApp.Models.RegisteredUser", "RegisteredUser")
+                    b.HasOne("SavoirApp.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("RegisteredUserID");
+                        .HasForeignKey("IDUser");
 
                     b.Navigation("Order");
 
-                    b.Navigation("RegisteredUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SavoirApp.Models.VIPUserOrders", b =>
                 {
                     b.HasOne("SavoirApp.Models.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("OrderID");
+                        .HasForeignKey("IDOrder")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("SavoirApp.Models.VIPUser", "VIPUser")
+                    b.HasOne("SavoirApp.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("VIPUserID");
+                        .HasForeignKey("IDUser");
 
                     b.Navigation("Order");
 
-                    b.Navigation("VIPUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SavoirApp.Models.Wishlist", b =>
                 {
                     b.HasOne("SavoirApp.Models.Item", "Item")
                         .WithMany()
-                        .HasForeignKey("ItemIdItem");
-
-                    b.HasOne("SavoirApp.Models.VIPUser", "VIPUser")
-                        .WithMany()
-                        .HasForeignKey("VIPUserID");
+                        .HasForeignKey("IDItem")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Item");
+                });
 
-                    b.Navigation("VIPUser");
+            modelBuilder.Entity("SavoirApp.Models.User", b =>
+                {
+                    b.HasOne("SavoirApp.Models.Wishlist", "Wishlist")
+                        .WithMany()
+                        .HasForeignKey("FKWishlistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Wishlist");
                 });
 #pragma warning restore 612, 618
         }

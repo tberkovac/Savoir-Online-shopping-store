@@ -7,10 +7,13 @@ namespace SavoirApp.Models
     public class Order
     {
         [Key]
-        public string ID { get; set; }
+        public int ID { get; set; }
         public double TotalPrice { get; set; }
-        public string IdUser { get; set; }
+
+        [EnumDataType(typeof(PayingOptions))]
         public PayingOptions PayingOption { get; set; }
+
+        [EnumDataType(typeof(Status))]
         public Status Status { get; set; }
 
         public Order()

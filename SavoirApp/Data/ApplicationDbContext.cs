@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SavoirApp.Models;
-using Microsoft.EntityFrameworkCore;
 
-
+/*
+ * 21ed42bf-1684-4757-9ba6-abf1f1de37b1 admin2 
+ * 30f6c9b9-58b1-4b5a-9838-dabd14ca7412 vip2
+ * df83680c-476b-4e5a-b4e5-b5267fe54385 user2
+ */
 namespace SavoirApp.Data
 {
     public class ApplicationDbContext : IdentityDbContext
@@ -20,12 +21,10 @@ namespace SavoirApp.Data
         public DbSet<ItemSizes> ItemSizes { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItems> OrderItems { get; set; }
-        public DbSet<RegisteredUser> RegisteredUsers { get; set; }
+        public DbSet<DelivererOrders> DelivererOrders { get; set; }
         public DbSet<RegisteredUserOrders> RegisteredUserOrders { get; set; }
-        public DbSet<VIPUser> VIPUsers { get; set; }
         public DbSet<VIPUserOrders> VIPUserOrders { get; set; }
         public DbSet<Wishlist> Wishlists { get; set; }
-        public DbSet<Deliverer> Deliverers { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,12 +33,10 @@ namespace SavoirApp.Data
             modelBuilder.Entity<ItemSizes>().ToTable("ItemSizes");
             modelBuilder.Entity<Order>().ToTable("Orders");
             modelBuilder.Entity<OrderItems>().ToTable("OrderItems");
-            modelBuilder.Entity<RegisteredUser>().ToTable("RegisteredUsers");
+            modelBuilder.Entity<DelivererOrders>().ToTable("DelivererOrders");
             modelBuilder.Entity<RegisteredUserOrders>().ToTable("RegisteredUserOrders");
-            modelBuilder.Entity<VIPUser>().ToTable("VIPUsers");
             modelBuilder.Entity<VIPUserOrders>().ToTable("VIPUserOrders");
             modelBuilder.Entity<Wishlist>().ToTable("Wishlists");
-            modelBuilder.Entity<Deliverer>().ToTable("Deliverers");
 
             base.OnModelCreating(modelBuilder);
         }
