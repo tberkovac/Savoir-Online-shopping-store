@@ -10,6 +10,7 @@ using SavoirApp.Models;
 
 namespace SavoirApp.Controllers
 {
+    [Authorize(Roles = "Admin, VIPUser")]
     public class VIPUserOrdersController : Controller
     {
         private readonly ApplicationDbContext _context;

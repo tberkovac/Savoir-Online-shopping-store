@@ -11,7 +11,7 @@ using SavoirApp.Models;
 
 namespace SavoirApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin, VIPUser")]
     public class WishlistsController : Controller
     {
         private readonly ApplicationDbContext _context;

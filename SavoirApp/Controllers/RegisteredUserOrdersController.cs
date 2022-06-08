@@ -11,6 +11,7 @@ using SavoirApp.Models;
 
 namespace SavoirApp.Controllers
 {
+    [Authorize(Roles = "Admin, RegisteredUser, VIPUser")]
     public class RegisteredUserOrdersController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -29,15 +29,21 @@
             <th>
                 @Html.DisplayNameFor(model => model.Gender)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageURL)
-            </th>
+              @if (User.IsInRole("Admin"))
+                {
+                    <th>
+                    @Html.DisplayNameFor(model => model.ImageURL)
+                    </th> 
+                    <th>
+                    @Html.DisplayNameFor(model => model.InStock)
+                    </th>
+
+                }
+            
             <th>
                 @Html.DisplayNameFor(model => model.Brand)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.InStock)
-            </th>
+           
             <th></th>
         </tr>
     </thead>
@@ -59,20 +65,34 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Gender)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageURL)
-            </td>
+             @if (User.IsInRole("Admin"))
+                {
+                     <td>
+                    @Html.DisplayFor(modelItem => item.ImageURL)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.InStock)
+                    </td>
+                }
+               
             <td>
                 @Html.DisplayFor(modelItem => item.Brand)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.InStock)
-            </td>
-            <td>
-                <a asp-action="Create" asp-controller="Items" asp-route-id="@item.ID">Add to cart</a> |
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            
+            <td>  
+                
+                @if (User.Identity.IsAuthenticated)
+                  {
+                     <a asp-action="Create" asp-controller="Items" asp-route-id="@item.ID">Add to cart</a> <nobr> | </nobr>
+                  }
+
+                 @if (User.IsInRole("Admin"))
+                        {
+                             <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> <nobr> | </nobr>
+                             <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> <nobr> | </nobr>
+                        }
+                   <a asp-action="Details" asp-route-id="@item.ID">Details</a> 
+                
             </td>
         </tr>
 }
