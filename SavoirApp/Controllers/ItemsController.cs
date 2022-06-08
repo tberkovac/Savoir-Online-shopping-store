@@ -27,10 +27,6 @@ namespace SavoirApp.Controllers
         {
             return View(await _context.Items.ToListAsync());
         }
-
-        //GET : cart
- 
-
         
 
         // GET: Items/Details/5
@@ -58,6 +54,19 @@ namespace SavoirApp.Controllers
 
             return View();
         }
+
+        /*
+        //Post : cart
+        [HttpPost]
+        public async Task<IActionResult> Cart(int id)
+        {
+            var userOrder = User.FindFirstValue(ClaimTypes.)
+            if()
+            _context.Add()
+        }
+        */
+
+
 
         // POST: Items/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -159,6 +168,41 @@ namespace SavoirApp.Controllers
         private bool ItemExists(int id)
         {
             return _context.Items.Any(e => e.ID == id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToCart(int id)
+        {
+        /*    var userId = User.FindFirstValue(ClaimTypes.);
+            User.Claims.
+            int narudzba;
+            if (!OrderExists())
+            {
+                var order = new Order();
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+                narudzba = _context.Orders.FromSqlRaw("select ID from Orders ORDER BY id DESC LIMIT 1").ToInt;
+                var registeredUserOrders = new RegisteredUserOrders(userId, narudzba)
+
+            }
+            else
+            {
+                var narudzbaPostojeca = _context.RegisteredUserOrders.FindAsync(userId)
+            }*/
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool OrderExists()
+        {
+            /*     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                 return _context.RegisteredUserOrders
+                     .Any(m => m.IDUser == userId);
+            */
+            return true;
         }
     }
 }

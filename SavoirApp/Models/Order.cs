@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SavoirApp.Models
 {
@@ -10,6 +11,10 @@ namespace SavoirApp.Models
         public int ID { get; set; }
         public double TotalPrice { get; set; }
 
+        [ForeignKey("User")]
+        public string IDUser { get; set; }
+        public User User { get; set; }
+        
         [EnumDataType(typeof(PayingOptions))]
         public PayingOptions PayingOption { get; set; }
 
@@ -19,5 +24,7 @@ namespace SavoirApp.Models
         public Order()
         {
         }
+
+     
     }
 }
