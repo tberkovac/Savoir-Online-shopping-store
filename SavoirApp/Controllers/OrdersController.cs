@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,6 @@ using SavoirApp.Models;
 
 namespace SavoirApp.Controllers
 {
-    [Authorize]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,7 +22,8 @@ namespace SavoirApp.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Orders.ToListAsync());
+            var applicationDbContext = _context.Orders.Include(o => o.User);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Orders/Details/5
@@ -36,6 +35,7 @@ namespace SavoirApp.Controllers
             }
 
             var order = await _context.Orders
+                .Include(o => o.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (order == null)
             {
@@ -48,6 +48,7 @@ namespace SavoirApp.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
+            ViewData["IDUser"] = new SelectList(_context.Set<User>(), "Id", "Id");
             return View();
         }
 
@@ -56,7 +57,7 @@ namespace SavoirApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,TotalPrice,PayingOption,Status")] Order order)
+        public async Task<IActionResult> Create([Bind("ID,TotalPrice,IDUser,PayingOption,Status")] Order order)
         {
             if (ModelState.IsValid)
             {
@@ -64,6 +65,7 @@ namespace SavoirApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["IDUser"] = new SelectList(_context.Set<User>(), "Id", "Id", order.IDUser);
             return View(order);
         }
 
@@ -80,6 +82,7 @@ namespace SavoirApp.Controllers
             {
                 return NotFound();
             }
+            ViewData["IDUser"] = new SelectList(_context.Set<User>(), "Id", "Id", order.IDUser);
             return View(order);
         }
 
@@ -88,7 +91,7 @@ namespace SavoirApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,TotalPrice,PayingOption,Status")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,TotalPrice,IDUser,PayingOption,Status")] Order order)
         {
             if (id != order.ID)
             {
@@ -115,6 +118,7 @@ namespace SavoirApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["IDUser"] = new SelectList(_context.Set<User>(), "Id", "Id", order.IDUser);
             return View(order);
         }
 
@@ -127,6 +131,7 @@ namespace SavoirApp.Controllers
             }
 
             var order = await _context.Orders
+                .Include(o => o.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (order == null)
             {
