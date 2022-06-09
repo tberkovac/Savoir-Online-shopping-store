@@ -20,5 +20,10 @@ namespace SavoirApp.Models
         public OrderItems()
         {
         }
+        public OrderItems(int orderid, int itemid)
+        {
+            this.IDOrder = orderid;
+            this.IDItem=itemid;
+        }
     }
 }

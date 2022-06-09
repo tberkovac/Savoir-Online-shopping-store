@@ -156,5 +156,11 @@ namespace SavoirApp.Controllers
         {
             return _context.Orders.Any(e => e.ID == id);
         }
+
+        public async Task<IActionResult> PrikaziKorpu()
+        {
+            return View(await _context.Orders.ToListAsync());
+        }
+
     }
 }

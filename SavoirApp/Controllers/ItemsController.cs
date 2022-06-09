@@ -172,37 +172,28 @@ namespace SavoirApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddToCart(int id)
+        public async Task<IActionResult> AddToCart(Item item)
         {
-        /*    var userId = User.FindFirstValue(ClaimTypes.);
-            User.Claims.
-            int narudzba;
+           var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Order narudzba;
             if (!OrderExists())
             {
-                var order = new Order();
+                var order = new Order(userId);
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
-                narudzba = _context.Orders.FromSqlRaw("select ID from Orders ORDER BY id DESC LIMIT 1").ToInt;
-                var registeredUserOrders = new RegisteredUserOrders(userId, narudzba)
-
             }
-            else
-            {
-                var narudzbaPostojeca = _context.RegisteredUserOrders.FindAsync(userId)
-            }*/
-
-
+             narudzba = _context.Orders.First(m => m.IDUser == userId);
+            OrderItems oi = new OrderItems(narudzba.ID, item.ID);
+            _context.OrderItems.Add(oi);
+            narudzba.izracunajCijenu();
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool OrderExists()
         {
-            /*     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                 return _context.RegisteredUserOrders
-                     .Any(m => m.IDUser == userId);
-            */
-            return true;
+                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                 return _context.Orders.Any(m => m.IDUser == userId);
         }
     }
 }
