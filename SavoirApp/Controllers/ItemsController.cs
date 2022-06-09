@@ -190,6 +190,37 @@ namespace SavoirApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Items
+        public async Task<IActionResult> Cart()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var narudzba = _context.Orders.First(m => m.IDUser == userId);
+            var orderItems = _context.OrderItems.Where(it => it.IDOrder == narudzba.ID);
+
+            List<Item> listaItemaZaPrikaz = new List<Item>();
+
+            foreach (var par in orderItems)
+            {
+                var item = _context.Items.First(it => it.ID == par.IDItem);
+                listaItemaZaPrikaz.Add(item);
+            }
+            return View(listaItemaZaPrikaz);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromCart(int id)
+        {
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var narudzba = _context.Orders.First(m => m.IDUser == userId);
+            var orderItems = _context.OrderItems.First(it => it.IDOrder == narudzba.ID && it.IDItem == id);
+
+            _context.OrderItems.Remove(orderItems);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Cart));
+        }
+
 
 
         private bool OrderExists()
