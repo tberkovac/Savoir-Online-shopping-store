@@ -82,9 +82,9 @@
             <td>  
                 
                 @if (User.Identity.IsAuthenticated)
-                    @using (Html.BeginForm("Index", "Items", FormMethod.Post))
+                    @using (Html.BeginForm("AddToCart", "Items", FormMethod.Post))
                     {
-                        <button asp-action="AddToCart" asp-controller="Items" name="id">Add to cart</button> <nobr> | </nobr>
+                        <button asp-action="AddToCart" asp-controller="Items" asp-route-id="@item.ID">Add to cart</button> <nobr> | </nobr>
                         }
 
                  @if (User.IsInRole("Admin"))

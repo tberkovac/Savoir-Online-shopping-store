@@ -172,7 +172,7 @@ namespace SavoirApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddToCart(Item item)
+        public async Task<IActionResult> AddToCart(int id)
         {
            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             Order narudzba;
@@ -183,12 +183,14 @@ namespace SavoirApp.Controllers
                 await _context.SaveChangesAsync();
             }
              narudzba = _context.Orders.First(m => m.IDUser == userId);
-            OrderItems oi = new OrderItems(narudzba.ID, item.ID);
+            OrderItems oi = new OrderItems(narudzba.ID, id);
             _context.OrderItems.Add(oi);
-            narudzba.izracunajCijenu();
+        //    narudzba.izracunajCijenu();
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
 
         private bool OrderExists()
         {
