@@ -1,8 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,6 @@ using SavoirApp.Models;
 
 namespace SavoirApp.Controllers
 {
-    [Authorize(Roles = "Admin, VIPUser")]
     public class VIPUserOrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,7 +22,7 @@ namespace SavoirApp.Controllers
         // GET: VIPUserOrders
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.VIPUserOrders.Include(v => v.Order);
+            var applicationDbContext = _context.VIPUserOrders.Include(v => v.Order).Include(v => v.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -38,6 +36,7 @@ namespace SavoirApp.Controllers
 
             var vIPUserOrders = await _context.VIPUserOrders
                 .Include(v => v.Order)
+                .Include(v => v.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (vIPUserOrders == null)
             {
@@ -51,6 +50,7 @@ namespace SavoirApp.Controllers
         public IActionResult Create()
         {
             ViewData["IDOrder"] = new SelectList(_context.Orders, "ID", "ID");
+            ViewData["IDUser"] = new SelectList(_context.Set<User>(), "Id", "Id");
             return View();
         }
 
@@ -68,6 +68,7 @@ namespace SavoirApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IDOrder"] = new SelectList(_context.Orders, "ID", "ID", vIPUserOrders.IDOrder);
+            ViewData["IDUser"] = new SelectList(_context.Set<User>(), "Id", "Id", vIPUserOrders.IDUser);
             return View(vIPUserOrders);
         }
 
@@ -85,6 +86,7 @@ namespace SavoirApp.Controllers
                 return NotFound();
             }
             ViewData["IDOrder"] = new SelectList(_context.Orders, "ID", "ID", vIPUserOrders.IDOrder);
+            ViewData["IDUser"] = new SelectList(_context.Set<User>(), "Id", "Id", vIPUserOrders.IDUser);
             return View(vIPUserOrders);
         }
 
@@ -121,6 +123,7 @@ namespace SavoirApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IDOrder"] = new SelectList(_context.Orders, "ID", "ID", vIPUserOrders.IDOrder);
+            ViewData["IDUser"] = new SelectList(_context.Set<User>(), "Id", "Id", vIPUserOrders.IDUser);
             return View(vIPUserOrders);
         }
 
@@ -134,6 +137,7 @@ namespace SavoirApp.Controllers
 
             var vIPUserOrders = await _context.VIPUserOrders
                 .Include(v => v.Order)
+                .Include(v => v.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (vIPUserOrders == null)
             {
