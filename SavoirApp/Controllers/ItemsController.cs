@@ -174,35 +174,59 @@ namespace SavoirApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToCart(int id)
         {
-        /*    var userId = User.FindFirstValue(ClaimTypes.);
-            User.Claims.
-            int narudzba;
+           var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Order narudzba;
             if (!OrderExists())
             {
-                var order = new Order();
+                var order = new Order(userId);
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
-                narudzba = _context.Orders.FromSqlRaw("select ID from Orders ORDER BY id DESC LIMIT 1").ToInt;
-                var registeredUserOrders = new RegisteredUserOrders(userId, narudzba)
-
             }
-            else
-            {
-                var narudzbaPostojeca = _context.RegisteredUserOrders.FindAsync(userId)
-            }*/
-
-
+             narudzba = _context.Orders.First(m => m.IDUser == userId);
+            OrderItems oi = new OrderItems(narudzba.ID, id);
+            _context.OrderItems.Add(oi);
+        //    narudzba.izracunajCijenu();
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Items
+        public async Task<IActionResult> Cart()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var narudzba = _context.Orders.First(m => m.IDUser == userId);
+            var orderItems = _context.OrderItems.Where(it => it.IDOrder == narudzba.ID);
+
+            List<Item> listaItemaZaPrikaz = new List<Item>();
+
+            foreach (var par in orderItems)
+            {
+                var item = _context.Items.First(it => it.ID == par.IDItem);
+                listaItemaZaPrikaz.Add(item);
+            }
+            return View(listaItemaZaPrikaz);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromCart(int id)
+        {
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var narudzba = _context.Orders.First(m => m.IDUser == userId);
+            var orderItems = _context.OrderItems.First(it => it.IDOrder == narudzba.ID && it.IDItem == id);
+
+            _context.OrderItems.Remove(orderItems);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Cart));
+        }
+
+
+
         private bool OrderExists()
         {
-            /*     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                 return _context.RegisteredUserOrders
-                     .Any(m => m.IDUser == userId);
-            */
-            return true;
+                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                 return _context.Orders.Any(m => m.IDUser == userId);
         }
     }
 }
