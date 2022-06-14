@@ -6,6 +6,34 @@
     ViewData["Title"] = "Cart";
 }
 
+<style>
+.button {
+  background-color: rgb(156,148,172);
+  border: none;
+  color: rgb(156,148,172);
+  
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 4px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.button {
+  background-color: white; 
+  color: black; 
+  border: 2px solid rgb(156,148,172);
+}
+
+.button:hover {
+  background-color: rgb(156,148,172);
+  color: white;
+}
+</style>
+
 <h1>Items</h1>
 
 <p>
@@ -29,11 +57,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.Gender)
             </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.ImageURL)
+            </th> 
               @if (User.IsInRole("Admin"))
                 {
-                    <th>
+                    @*<th>
                     @Html.DisplayNameFor(model => model.ImageURL)
-                    </th> 
+                    </th> *@
                     <th>
                     @Html.DisplayNameFor(model => model.InStock)
                     </th>
@@ -65,11 +96,17 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Gender)
             </td>
+            <td>
+                <div style="padding:6px">
+                    @*@Html.DisplayFor(modelItem => item.ImageURL)*@
+                    <img src= "@Url.Content(item.ImageURL)" alt="Image" style="height:150px;width:150px;"/>
+                </div>
+            </td>
              @if (User.IsInRole("Admin"))
                 {
-                     <td>
+                     @*<td>
                     @Html.DisplayFor(modelItem => item.ImageURL)
-                    </td>
+                    </td>*@
                     <td>
                     @Html.DisplayFor(modelItem => item.InStock)
                     </td>
@@ -84,7 +121,7 @@
                 @if (User.Identity.IsAuthenticated)
                     @using (Html.BeginForm("RemoveFromCart", "Items", FormMethod.Post))
                     {
-                        <button asp-action="RemoveFromCart" asp-controller="Items" asp-route-id="@item.ID">Remove from cart</button> <nobr> | </nobr>
+                        <button class="button" asp-action="RemoveFromCart" asp-controller="Items" asp-route-id="@item.ID">Remove from cart</button> <nobr> | </nobr>
                         }
 
                  @if (User.IsInRole("Admin"))
