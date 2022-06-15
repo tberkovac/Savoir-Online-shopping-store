@@ -36,9 +36,6 @@
 
 <h1>Items</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -122,7 +119,7 @@
                     @using (Html.BeginForm("RemoveFromCart", "Items", FormMethod.Post))
                     {
                         <button class="button" asp-action="RemoveFromCart" asp-controller="Items" asp-route-id="@item.ID">Remove from cart</button> <nobr> | </nobr>
-                        }
+                     }
 
                  @if (User.IsInRole("Admin"))
                         {

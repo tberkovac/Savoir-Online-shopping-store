@@ -11,7 +11,7 @@ using SavoirApp.Models;
 
 namespace SavoirApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class ItemSizesController : Controller
     {
         private readonly ApplicationDbContext _context;

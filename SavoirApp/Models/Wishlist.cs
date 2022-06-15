@@ -13,8 +13,18 @@ namespace SavoirApp.Models
         public int IDItem { get; set; }
         public Item Item { get; set; }
 
+        [ForeignKey("User")]
+        public string IDUser { get; set; }
+        public User User { get; set; }
+
         public Wishlist()
         {
+        }
+
+        public Wishlist(int a, string s)
+        {
+            IDItem = a;
+            IDUser = s;
         }
     }
 }

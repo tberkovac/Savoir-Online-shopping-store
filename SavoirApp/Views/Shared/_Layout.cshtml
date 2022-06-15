@@ -46,20 +46,22 @@
                                 <a class="nav-link text-white" asp-area="" asp-controller="Wishlists" asp-action="Index">Wishlist</a>
                             </li>
                         }
-                         @if (User.Identity.IsAuthenticated)
-                        {
-                             <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Items" asp-action="Cart">Cart</a>
-                            </li>
-                        }
-                       
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.IsInRole("User") || User.IsInRole("VIPUser") || User.IsInRole("Admin") || User.IsInRole("RegisteredUser"))
+
                         {
                             <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="RegisteredUserOrders" asp-action="OrderList">Orders</a>
-                        </li>
+                                <a class="nav-link text-white" asp-area="" asp-controller="Items" asp-action="Cart">Cart</a>
+                            </li>
                         }
-                       <li class="nav-item">
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("Deliverer"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a>
+                            </li>
+                        }
+
+                        <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Items" asp-action="Index">Shop Now!</a>
                         </li>
                     </ul>

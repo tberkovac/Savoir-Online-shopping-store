@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,7 @@ namespace SavoirApp.Controllers
         }
 
         // GET: Wishlists/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["IDItem"] = new SelectList(_context.Items, "ID", "ID");
@@ -60,6 +62,7 @@ namespace SavoirApp.Controllers
         // POST: Wishlists/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,IDItem")] Wishlist wishlist)
@@ -75,6 +78,7 @@ namespace SavoirApp.Controllers
         }
 
         // GET: Wishlists/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -96,6 +100,7 @@ namespace SavoirApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,IDItem")] Wishlist wishlist)
         {
             if (id != wishlist.ID)
@@ -127,6 +132,7 @@ namespace SavoirApp.Controllers
             return View(wishlist);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Wishlists/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -160,6 +166,40 @@ namespace SavoirApp.Controllers
         private bool WishlistExists(int id)
         {
             return _context.Wishlists.Any(e => e.ID == id);
+        }
+
+        [Authorize(Roles = "VIPUser")]
+        // GET: Items
+        public async Task<IActionResult> Wishlist()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var wish = _context.Wishlists.ToList().FindAll(m => m.IDUser == userId);
+
+            List<Item> listaItemaZaPrikaz = new List<Item>();
+
+            if (wish != null)
+                foreach (Wishlist par in wish)
+                {
+                    var item = _context.Items.FirstOrDefault(it => it.ID == par.IDItem);
+                    if (item != null)
+                        listaItemaZaPrikaz.Add(item);
+                }
+            return View(listaItemaZaPrikaz);
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToWishlist(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+           
+            var oi = new Wishlist(id, userId);
+            _context.Wishlists.Add(oi);
+         
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

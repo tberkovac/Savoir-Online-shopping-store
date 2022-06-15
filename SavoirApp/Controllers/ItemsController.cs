@@ -48,6 +48,7 @@ namespace SavoirApp.Controllers
         }
 
         // GET: Items/Create
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             ViewData["Brand"] = new SelectList(_context.Items, "ID", "ID");
@@ -55,24 +56,13 @@ namespace SavoirApp.Controllers
             return View();
         }
 
-        /*
-        //Post : cart
-        [HttpPost]
-        public async Task<IActionResult> Cart(int id)
-        {
-            var userOrder = User.FindFirstValue(ClaimTypes.)
-            if()
-            _context.Add()
-        }
-        */
-
-
-
+        
         // POST: Items/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create([Bind("ID,Name,Price,ItemDetails,Quantity,Gender,ImageURL,Brand,InStock")] Item item)
         {
             if (ModelState.IsValid)
@@ -85,6 +75,7 @@ namespace SavoirApp.Controllers
         }
 
         // GET: Items/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -105,6 +96,7 @@ namespace SavoirApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Price,ItemDetails,Quantity,Gender,ImageURL,Brand,InStock")] Item item)
         {
             if (id != item.ID)
@@ -136,6 +128,7 @@ namespace SavoirApp.Controllers
         }
 
         // GET: Items/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -156,6 +149,7 @@ namespace SavoirApp.Controllers
         // POST: Items/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var item = await _context.Items.FindAsync(id);
@@ -170,6 +164,7 @@ namespace SavoirApp.Controllers
             return _context.Items.Any(e => e.ID == id);
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToCart(int id)
@@ -190,37 +185,83 @@ namespace SavoirApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        [Authorize]
         // GET: Items
         public async Task<IActionResult> Cart()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var narudzba = _context.Orders.First(m => m.IDUser == userId);
-            var orderItems = _context.OrderItems.Where(it => it.IDOrder == narudzba.ID);
-
+            var narudzba = _context.Orders.FirstOrDefault(m => m.IDUser == userId);
+            IQueryable<OrderItems> orderItems = _context.OrderItems.Where(it => it.IDOrder == narudzba.ID);
             List<Item> listaItemaZaPrikaz = new List<Item>();
 
-            foreach (var par in orderItems)
-            {
-                var item = _context.Items.First(it => it.ID == par.IDItem);
-                listaItemaZaPrikaz.Add(item);
-            }
+            if(orderItems != null)
+                foreach (OrderItems par in orderItems)
+                {
+                    var item = _context.Items.FirstOrDefault(it => it.ID == par.IDItem);
+                    if(item != null)
+                        listaItemaZaPrikaz.Add(item);
+                }
             return View(listaItemaZaPrikaz);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> RemoveFromCart(int id)
         {
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var narudzba = _context.Orders.First(m => m.IDUser == userId);
-            var orderItems = _context.OrderItems.First(it => it.IDOrder == narudzba.ID && it.IDItem == id);
+            var narudzba = _context.Orders.FirstOrDefault(m => m.IDUser == userId);
 
-            _context.OrderItems.Remove(orderItems);
-            await _context.SaveChangesAsync();
+            if(narudzba != null)
+            {
+                var orderItems = _context.OrderItems.FirstOrDefault(it => it.IDOrder == narudzba.ID && it.IDItem == id);
+
+                if(orderItems != null)
+                {
+                    _context.OrderItems.Remove(orderItems);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            
 
             return RedirectToAction(nameof(Cart));
         }
 
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToWishlist(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var oi = new Wishlist(id, userId);
+            _context.Wishlists.Add(oi);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [Authorize(Roles = "VIPUser")]
+        // GET: Items
+        public async Task<IActionResult> Wishlist()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var wish = _context.Wishlists.ToList().FindAll(m => m.IDUser == userId);
+
+            List<Item> listaItemaZaPrikaz = new List<Item>();
+
+            if (wish != null)
+                foreach (Wishlist par in wish)
+                {
+                    var item = _context.Items.FirstOrDefault(it => it.ID == par.IDItem);
+                    if (item != null)
+                        listaItemaZaPrikaz.Add(item);
+                }
+            return View(listaItemaZaPrikaz);
+        }
 
 
         private bool OrderExists()
